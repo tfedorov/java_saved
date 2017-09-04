@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd" version="2.4">
+    <display-name>Check Application</display-name>
+    <description>
+        This is a simple web application with a source code organization
+        based on the recommendations of the Application Developer's Guide.
+    </description>
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>
+        	/WEB-INF/spring/root-context.xml
+        	/WEB-INF/spring/make-bet-security.xml
+        	</param-value>
+    </context-param>
+    <!-- Make container Spring, for all servlets and filters-->
+    <listener>
+        <listener-class>
+			org.springframework.web.context.ContextLoaderListener
+		</listener-class>
+    </listener>
+
+    
+	<!-- Basic servlet, process all request to application -->
+    <servlet>
+        <servlet-name>springMVCServlet</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>/WEB-INF/spring/springMVCServlet/servlet-context.xml</param-value>
+        </init-param>
+        <load-on-startup>3</load-on-startup>
+    </servlet>
+    
+    <servlet-mapping>
+        <servlet-name>springMVCServlet</servlet-name>
+        <url-pattern>/rates/*</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+		<servlet-name>MetadataServlet</servlet-name>
+		<servlet-class>
+			ua.com.make_bet.web.MetadataServlet
+		</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>MetadataServlet</servlet-name>
+		<url-pattern>/admin/monitor</url-pattern>
+	</servlet-mapping>
+	<!-- Monitoring performance -->
+	<listener>
+		<listener-class>etm.contrib.integration.web.EtmMonitorContextListener</listener-class>
+	</listener>
+
+	<servlet>
+		<servlet-name>performanceMonitor</servlet-name>
+		<servlet-class>etm.contrib.integration.web.HttpConsoleServlet</servlet-class>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>performanceMonitor</servlet-name>
+		<url-pattern>/admin/performance/*</url-pattern>
+	</servlet-mapping>
+
+	<filter>
+		<filter-name>performance-monitor</filter-name>
+		<filter-class>etm.contrib.integration.web.HttpRequestPerformanceFilter</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>performance-monitor</filter-name>
+		<url-pattern>/start/*</url-pattern>
+	</filter-mapping>
+  
+  <!-- Spring security -->
+      <filter>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    </filter>
+ 
+    <filter-mapping>
+      <filter-name>springSecurityFilterChain</filter-name>
+      <url-pattern>/admin/*</url-pattern>
+    </filter-mapping>
+</web-app>
