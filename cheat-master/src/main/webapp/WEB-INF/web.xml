@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd" version="2.4">
+    <display-name>HelloWorld Application</display-name>
+    <description>
+        This is a simple web application with a source code organization
+        based on the recommendations of the Application Developer's Guide.
+    </description>
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>/WEB-INF/spring/root-context.xml</param-value>
+    </context-param>
+    <!-- Создаёт контейнер Spring, разделяемый всеми сервлетами и фильтрами -->
+    <listener>
+        <listener-class>
+			org.springframework.web.context.ContextLoaderListener
+		</listener-class>
+    </listener>
+	<!-- Базовый сервлет, обрабатывает все запросы к приложению -->
+    <servlet>
+        <servlet-name>gameServlet</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>/WEB-INF/spring/gameServlet/servlet-context.xml</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet-mapping>
+        <servlet-name>gameServlet</servlet-name>
+        <url-pattern>/game/*</url-pattern>
+    </servlet-mapping>
+    
+</web-app>

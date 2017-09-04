@@ -1,0 +1,50 @@
+body {
+	width: 607px;
+	height: 500px;
+	background-color: grey;
+	overflow: hidden;
+}
+
+.area{
+	/*
+	border:1px solid red;
+	background-color: #6f6f6f;
+	
+	position: absolute;
+	left: 10px;
+	*/
+	width: 590px;
+}
+
+#scoreArea{
+	border:1px solid red;
+	height: 30px;
+}
+
+#userPhtotosArea{
+	height: 130px;
+}
+
+#stepsArea{
+	height: 130px;
+	border:1px solid green;
+}
+
+#stepsArea #stepLogs{
+	top: 155px;
+	width: 200px;
+	border:1px solid blue;
+	
+}
+
+#stepsArea #curentStep{
+	left: 210px;
+	width: 200px;
+	border:1px solid yellow;
+	
+}
+
+#answerArea{
+	/*top: 400px;*/
+	height: 70px;
+}
