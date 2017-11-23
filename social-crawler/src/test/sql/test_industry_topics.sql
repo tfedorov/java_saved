@@ -1,0 +1,2 @@
+insert into `topic`(`name`,`keywords`,`status`,`type`,`ctime`,`mtime`,`cuser`,`muser`,`company`)
+values ('test industry topic IT','computer,software,hardware,programming,IDE,agile,scrum,SAAS,PAAS,internet,processor,CPU,server,database,network,laptop,data,keyboard,tcp,cable,site,file,byte,java,scala,erlang,pyton,ruby,sql,javascript,html,css,GUI,semiconductor,debug,application,SOA,multimedia',3,'INDUSTRY',now(),now(),'<crawler>',null,0);

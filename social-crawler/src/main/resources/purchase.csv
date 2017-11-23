@@ -1,0 +1,95 @@
+PrimaryTest,SecondaryTest,CategoryLevel1
+coupon*,,Coupon
+*buy,,Expense
+budget*,,Expense
+c.o.d.,,Expense
+cash,,Expense
+cash only,,Expense
+cents,,Expense
+charge,,Expense
+competitive,,Expense
+competitive pricing,,Expense
+cost*,,Expense
+cost-effective,,Expense
+credit,,Expense
+dollar*,,Expense
+down payment,,Expense
+easy on the pocket,,Expense
+economical,,Expense
+exorbitant,,Expense
+expensive,,Expense
+extravagant,,Expense
+finance,,Expense
+finances,,Expense
+financial plan*,,Expense
+hard cash,,Expense
+high end,,Expense
+interest,,Expense
+inventory,,Expense
+invoice,,Expense
+liquidation,,Expense
+low end,,Expense
+manufacturer cost,,Expense
+mark up,,Expense
+market value,,Expense
+moderate,,Expense
+monetary,,Expense
+money,,Expense
+money back,,Expense
+moneys worth,,Expense
+overstock,,Expense
+penalty,,Expense
+prohibitive,,Expense
+ready money,,Expense
+reasonable,,Expense
+reasonably priced,,Expense
+ridiculous,,Expense
+rip off,,Expense
+rip-off,,Expense
+sky-high,,Expense
+spending money,,Expense
+steep,,Expense
+sum,,Expense
+through the roof,,Expense
+value,,Expense
+very expensive,,Expense
+very high,,Expense
+affordable,,Price
+amount,,Price
+astronomical,,Price
+best deal*,#dealer*,Price
+best offer,,Price
+good deal*,#dealer*,Price
+great deal*,#dealer*,Price
+high-priced,,Price
+inexpensive,,Price
+low-priced,,Price
+manufacturers suggested price,,Price
+match prices,,Price
+overpriced,,Price
+over-priced,,Price
+price cut,,Price
+price*,,Price
+retail,,Price
+super deal*,#dealer*,Price
+total,,Price
+underpriced,,Price
+under-priced,,Price
+wholesale,,Price
+rebat*,,Rebate
+refund*,,Refund
+at cost,,Sale
+bargain basement,,Sale
+bargain*,,Sale
+cheap,,Sale
+dealer cost,,Sale
+markdown,,Sale
+marked down,,Sale
+reduce*,,Sale
+reduction,,Sale
+roll back,,Sale
+sale*,,Sale
+wholesale,,Sale
+discount*,,Sale
+clearance,,Sale
+cut-rate,,Sale

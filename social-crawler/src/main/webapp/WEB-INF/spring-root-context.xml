@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+	http://www.springframework.org/schema/security
+	http://www.springframework.org/schema/security/spring-security-3.1.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/mvc 
+    http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd">
+
+	<context:annotation-config />
+
+	<mvc:annotation-driven />
+
+	<context:component-scan base-package="com.acxiom" />
+
+	<bean id="springContext" class="com.tfedorov.social.utils.ApplicationContextUtils" />
+
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:/application.properties</value>
+				<value>file:/etc/acxm/config/social/application.properties</value>
+			</list>
+		</property>
+		<property name="ignoreResourceNotFound" value="true" />
+		<!-- <property name="ignoreUnresolvablePlaceholders" value="true" /> -->
+	</bean>
+
+
+	<bean id="crawlerDataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="${agg.db.url}" />
+		<property name="username" value="${agg.db.username}" />
+		<property name="password" value="${agg.db.password}" />
+		<property name="maxIdle" value="10" />
+		<property name="maxActive" value="100" />
+		<property name="maxWait" value="10000" />
+		<property name="validationQuery" value="select 1" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testWhileIdle" value="true" />
+		<property name="timeBetweenEvictionRunsMillis" value="1200000" />
+		<property name="minEvictableIdleTimeMillis" value="1800000" />
+		<property name="numTestsPerEvictionRun" value="5" />
+		<property name="defaultAutoCommit" value="true" />
+		<!--  default level is java.sql.Connection.TRANSACTION_REPEATABLE_READ = 4 -->
+		<!--  set to java.sql.Connection.TRANSACTION_READ_COMMITTED = 2 -->
+		<property name="defaultTransactionIsolation" value="4" />
+	</bean>
+
+	<bean id="metaDataDao" name="metaDataDao" class="com.tfedorov.utils.db.metadata.dao.MetaDataDaoImpl">
+		<property name="dataSource" ref="crawlerDataSource" />
+	</bean>
+	
+	<bean id="updateTopicsJob"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="twitterStreamingService" />
+		<property name="targetMethod" value="updateTopics"></property>
+	</bean>
+
+	<bean id="checkHealthJob"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="twitterStreamingHealthService" />
+		<property name="targetMethod" value="check"></property>
+	</bean>
+
+	<bean id="cleanTweetStatisticsJob"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="socialCleanerService" />
+		<property name="targetMethod" value="cleanTweetStatistics"></property>
+	</bean>
+    
+    <bean id="cleanUselessStemm"
+          class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="stemmingService" />
+        <property name="targetMethod" value="cleanUselessSteam"></property>
+    </bean>
+
+	<bean id="preaggregationTopicsTermsJob"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="termsAggregationService" />
+		<property name="targetMethod" value="aggregateTerms"></property>
+		<property name="concurrent" value="false"></property>
+	</bean>
+
+	<bean id="updateTopicsTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+		<property name="jobDetail" ref="updateTopicsJob" />
+		<property name="startDelay" value="600000" />
+		<property name="repeatInterval" value="${crawler.update.topic.period:600000}" />
+	</bean>
+
+	<bean id="checkHealthTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+		<property name="jobDetail" ref="checkHealthJob" />
+		<property name="startDelay" value="500000" />
+		<property name="repeatInterval" value="${crawler.check.health.period:300000}" />
+	</bean>
+
+	<bean id="cleanTweetStatisticsCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="cleanTweetStatisticsJob" />
+		<property name="timeZone" value="#{T(java.util.TimeZone).getTimeZone('${crawler.timezone:PST}')}" />
+		<property name="cronExpression" value="${agg.social.cleaner.cron:0 31 4 * * ?}" />
+	</bean>
+
+	<bean id="preaggregateTopicTermsCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="preaggregationTopicsTermsJob" />
+		<property name="timeZone" value="#{T(java.util.TimeZone).getTimeZone('${crawler.timezone:PST}')}" />
+		<property name="cronExpression" value="${agg.social.preaggregate.cron:0 0 3 * * ?}" />
+	</bean>
+	
+	
+    <bean id="cleanUselessStemmCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="cleanUselessStemm" />
+        <property name="timeZone" value="#{T(java.util.TimeZone).getTimeZone('${crawler.timezone:PST}')}" />
+        <property name="cronExpression" value="${agg.social.latest.cleaner.cron:0 30 1 * * ?}" />
+    </bean>
+    
+   <bean id="connectionManagerProxy"
+    class="org.apache.http.impl.conn.PoolingClientConnectionManager">
+    <property name="maxTotal" value="20" />
+  </bean>
+    
+   <bean id="httpClientProxy" class="org.apache.http.impl.client.DefaultHttpClient">
+    <constructor-arg ref="connectionManagerProxy" />
+  </bean>
+	
+	<!--  axciom-util beans-->
+	<bean id="securityUtil" class="com.tfedorov.utils.security.SecurityUtil"/>
+	<bean id="authUtil" class="com.tfedorov.utils.security.BasicAuthUtil"/>
+	
+	<bean id="schedulerFactory"
+		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref local="updateTopicsTrigger" />
+				<ref local="checkHealthTrigger" />
+				<ref local="cleanTweetStatisticsCronTrigger" />
+				<ref local="cleanUselessStemmCronTrigger" />
+				<ref local="preaggregateTopicTermsCronTrigger" />
+			</list>
+		</property>
+		<property name="quartzProperties">
+			<props>
+				<prop key="org.quartz.threadPool.threadCount">5</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!-- JMX -->
+	<import resource="jmxExporter.xml" />
+
+</beans>

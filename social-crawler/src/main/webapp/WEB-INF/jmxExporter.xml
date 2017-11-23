@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="mbeanServer" class="org.springframework.jmx.support.MBeanServerFactoryBean">
+        <property name="locateExistingServerIfPossible" value="true"/>
+    </bean>
+
+
+    <bean id="registry" class="org.springframework.remoting.rmi.RmiRegistryFactoryBean">
+        <property name="port" value="${jmx.registry.port:4401}"/>
+    </bean>
+
+    <!-- Expose JMX over RMI -->
+    <bean id="serverConnector" class="org.springframework.jmx.support.ConnectorServerFactoryBean" depends-on="registry">
+        <property name="registrationBehaviorName" value="REGISTRATION_REPLACE_EXISTING"/>
+        <property name="objectName" value="connector:name=rmi"/>
+        <property name="serviceUrl"
+                  value="service:jmx:rmi://localhost:${jmx.stub.port:4402}/jndi/rmi://localhost:${jmx.registry.port:4401}/social-crawler"/>
+        <property name="server" ref="mbeanServer"/>
+    </bean>
+
+    <bean id="jmxExporter" class="org.springframework.jmx.export.MBeanExporter">
+        <property name="registrationBehaviorName" value="REGISTRATION_REPLACE_EXISTING"/>
+        <property name="beans">
+            <map/>
+        </property>
+    </bean>
+
+</beans>

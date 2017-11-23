@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration PUBLIC "-//APACHE//DTD LOG4J 1.2//EN" "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+	<!-- Appenders -->
+	<appender name="console" class="org.apache.log4j.ConsoleAppender">
+		<param name="Target" value="System.out" />
+		<param name="Threshold" value="warn" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%-5p %d [%t] %c: %m%n" />
+		</layout>
+	</appender>
+
+	<appender name="dailyAppender" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="${catalina.base}/logs/social.log" />
+		<param name="Append" value="true" />
+		<param name="MaxFileSize" value="100MB" />
+		<param name="MaxBackupIndex" value="5" />
+		<param name="Threshold" value="info" />
+		<layout class="org.apache.log4j.PatternLayout">
+		<param name="ConversionPattern" value="%-5p %d [%t] %c: %m%n" />
+		</layout>
+	</appender>
+
+	<!-- appender add warn message into the engangementWebWarn.html -->
+	<appender name="warnUrlsAppenderHtml" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="${catalina.base}/logs/socialWarn.html" />
+		<param name="Append" value="true" />
+		<param name="MaxFileSize" value="5000KB" />
+		<param name="MaxBackupIndex" value="5" />
+		<param name="Threshold" value="warn" />
+		<layout class="org.apache.log4j.HTMLLayout" />
+	</appender>
+	
+	<!-- appender add warn message for sentiment logger-->
+<!-- 	<appender name="sentimentAppender" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="${catalina.base}/logs/sentiment.log" />
+		<param name="Append" value="true" />
+		<param name="MaxFileSize" value="100MB" />
+		<param name="MaxBackupIndex" value="5" />
+		<param name="Threshold" value="TRACE" />
+		<layout class="org.apache.log4j.PatternLayout">
+		<param name="ConversionPattern" value="%d : %m%n" />
+		</layout>
+	</appender>
+ -->
+	<!-- logger for catching sentiment calculation-->
+<!-- 	<logger name="com.acxiom.dmp.social.twitter.sentiments">
+		<level value="TRACE" />
+		<appender-ref ref="sentimentAppender" />
+	</logger>
+	 -->
+	<!-- Root Logger -->
+	<root>
+		<priority value="info" />
+		<appender-ref ref="console" />
+		<appender-ref ref="warnUrlsAppenderHtml" />
+		<appender-ref ref="dailyAppender" />
+	</root>
+
+</log4j:configuration>

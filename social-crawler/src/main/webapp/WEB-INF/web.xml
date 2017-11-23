@@ -1,0 +1,175 @@
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd" >
+
+<web-app>
+	<display-name>Archetype Created Web Application</display-name>
+
+	<filter>
+		<filter-name>CharacterEncodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+		<init-param>
+			<param-name>forceEncoding</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	<!-- This filter implements BasicAuthentication HTTP for admin requests -->
+	<filter>
+		<filter-name>AdminBasicAuthenticationFilter</filter-name>
+		<filter-class>
+			com.axciom.utils.security.BasicAuthenticationFilter
+		</filter-class>
+		<init-param>
+			<param-name>prefix</param-name>
+			<param-value>admin</param-value>
+			<description>
+				Properties for this filter begins with prefix and described in
+				application.property file
+			</description>
+		</init-param>
+	</filter>
+	<!-- This filter implements BasicAuthentication HTTP for crawler requests -->
+	<filter>
+		<filter-name>CrawlerBasicAuthenticationFilter</filter-name>
+		<filter-class>
+			com.axciom.utils.security.BasicAuthenticationFilter
+		</filter-class>
+		<init-param>
+			<param-name>prefix</param-name>
+			<param-value>crawler</param-value>
+			<description>
+				Properties for this filter begins with prefix and described in
+				application.property file
+			</description>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>CrawlerBasicAuthenticationFilter</filter-name>
+		<url-pattern>/bknd/*</url-pattern>
+	</filter-mapping>	
+
+	<filter-mapping>
+		<filter-name>AdminBasicAuthenticationFilter</filter-name>
+		<url-pattern>/admin/*</url-pattern>
+	</filter-mapping>	
+	<filter-mapping>
+		<filter-name>CharacterEncodingFilter</filter-name>
+		<url-pattern>*</url-pattern>
+	</filter-mapping>
+	
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>/WEB-INF/spring-root-context.xml</param-value>
+	</context-param>
+	<!-- <listener> <listener-class>etm.contrib.integration.web.EtmMonitorContextListener</listener-class> 
+		</listener> -->
+		<!--  use own version of listener to disable performance collecting by default -->
+	<listener>
+		<listener-class>com.tfedorov.social.web.performance.SCEtmMonitorContextListener</listener-class>
+	</listener>
+
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+	
+	<servlet>
+		<servlet-name>MVCDispatcher</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	
+	<servlet>
+		<servlet-name>TweetsEmulatingServlet</servlet-name>
+		<servlet-class>com.tfedorov.social.twitter.web.TweetsEmulatingServlet</servlet-class>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
+
+	<servlet>
+		<servlet-name>CrawlerManagerServlet</servlet-name>
+		<servlet-class>com.tfedorov.social.web.CrawlerManagerServlet</servlet-class>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
+	<servlet>
+		<servlet-name>performanceMonitor</servlet-name>
+		<servlet-class>etm.contrib.integration.web.HttpConsoleServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet>
+		<servlet-name>DBMetadataServlet</servlet-name>
+		<servlet-class>
+            com.tfedorov.social.web.servlet.DBMetadataServlet
+        </servlet-class>
+		<load-on-startup>4</load-on-startup>
+	</servlet>
+	
+	<!-- Servlet move out log in response -->
+	<servlet>
+		<servlet-name>LogsServlet</servlet-name>
+		<servlet-class>com.tfedorov.utils.logging.LogServlet</servlet-class>
+		<init-param>
+			<param-name>logFileName</param-name>
+			<param-value>socialWarn.html</param-value>
+			<description>This file will be printed for default log url</description>
+		</init-param>
+	</servlet>
+	
+	<servlet>
+		<servlet-name>AggregationServlet</servlet-name>
+		<servlet-class>com.tfedorov.social.twitter.web.AggregationServlet</servlet-class>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>MVCDispatcher</servlet-name>
+		<url-pattern>/bknd/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>TweetsEmulatingServlet</servlet-name>
+		<url-pattern>/emulate/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>CrawlerManagerServlet</servlet-name>
+		<url-pattern>/admin/admin/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>performanceMonitor</servlet-name>
+		<!-- <url-pattern>/admin/performance/*</url-pattern> -->
+		<url-pattern>/admin/performance/*</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>AggregationServlet</servlet-name>
+		<url-pattern>/admin/aggregation/*</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>DBMetadataServlet</servlet-name>
+		<url-pattern>/admin/dbmetadata</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>LogsServlet</servlet-name>
+		<url-pattern>/admin/logs/*</url-pattern>
+	</servlet-mapping>
+
+	<filter>
+		<filter-name>performance-monitor-filter</filter-name>
+		<filter-class>com.tfedorov.utils.web.performance.HttpRequestPerformanceFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>performance-monitor-filter</filter-name>
+		<servlet-name>CrawlerManagerServlet</servlet-name>
+		<servlet-name>TweetsEmulatingServlet</servlet-name>
+		<servlet-name>MVCDispatcher</servlet-name>
+		<servlet-name>AggregationServlet</servlet-name>
+		<servlet-name>DBMetadataServlet</servlet-name>
+	</filter-mapping>
+</web-app>
